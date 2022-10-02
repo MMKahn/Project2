@@ -1,0 +1,16 @@
+---
+title: "Project2"
+author: "Melanie Kahn"
+date: "2022-10-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(httr)
+breweries <- GET("https://api.openbrewerydb.org/breweries")
+str(breweries, max.level = 1)
+```
