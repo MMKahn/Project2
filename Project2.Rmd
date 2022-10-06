@@ -1,8 +1,8 @@
 ---
 title: "Project2"
-author: "Melanie Kahn"
+author: "Melanie Kahn & Bennett McAuley"
 date: "2022-10-02"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
