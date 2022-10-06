@@ -9,8 +9,22 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Overview
+
+The purpose and overall goal of this project is to create a vignette about contacting an API using functions we will create to query, parse, and return data in a well-structured format. These functions will drive the remainder of the the task, which will involve exploratory data analysis.
+
+We chose to create a vignette to interact with the beer data API by the [Open Brewery DB](https://www.openbrewerydb.org/faq) project.
+
 ```{r}
 library(httr)
 breweries <- GET("https://api.openbrewerydb.org/breweries")
 str(breweries, max.level = 1)
+```
+
+### Function Definitions
+
+This section is dedicated to showcasing all of the functions that went into contacting the API, querying data, and performing our basic exploratory analysis.
+
+```{r API contact}
+
 ```
