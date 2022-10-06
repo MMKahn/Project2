@@ -1,5 +1,5 @@
 ---
-title: "Project2"
+title: "ST 558 Project 2"
 author: "Melanie Kahn & Bennett McAuley"
 date: "2022-10-02"
 output: github_document
@@ -9,11 +9,21 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Overview
+# Overview
 
-The purpose and overall goal of this project is to create a vignette about contacting an API using functions we will create to query, parse, and return data in a well-structured format. These functions will drive the remainder of the the task, which will involve exploratory data analysis.
+The purpose and overall goal of this vignette is to instruct the user on how to contact an API using functions we created to query, parse, and return data in a well-structured format. These functions drive a basic exploratory analysis.
 
-We chose to create a vignette to interact with the beer data API by the [Open Brewery DB](https://www.openbrewerydb.org/faq) project.
+This vignette makes use of the beer data API by the [Open Brewery DB](https://www.openbrewerydb.org/faq) project.
+
+## Requirements {.tabset}
+
+The following packages are required to run the code properly:
+
+- `httr`
+- `jsonlite`
+- `tidyverse`
+
+### The Data 
 
 ```{r}
 library(httr)
@@ -23,8 +33,9 @@ str(breweries, max.level = 1)
 
 ### Function Definitions
 
-This section is dedicated to showcasing all of the functions that went into contacting the API, querying data, and performing our basic exploratory analysis.
+This section is dedicated to showcasing all of the functions go into contacting the API, querying data, and performing our basic exploratory analysis.
 
 ```{r API contact}
 
 ```
+
