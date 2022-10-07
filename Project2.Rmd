@@ -2,7 +2,9 @@
 title: "ST 558 Project 2"
 author: "Melanie Kahn & Bennett McAuley"
 date: "2022-10-02"
-output: github_document
+output:
+  github_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -31,7 +33,6 @@ The following packages are required to run the code properly:
 
 This section provides the context and structure of the data to get a better understanding of the contents of the API.
 
-<details>
 The brewery data from Open Brewery DB features information on breweries, cideries, brewpubs, and bottleshops around the world. Using the `GET` function from the `httr` package, a list of breweries is returned.
 
 ```{r}
@@ -39,14 +40,21 @@ library(httr)
 breweries <- GET("https://api.openbrewerydb.org/breweries")
 str(breweries, max.level = 1)
 ```
-</details>
+
+This information isn't very readable, so we will parse it using the `FromJSON` function from the `jsonlite` package, and represent the information as a tibble.
+
+```{r}
+brew_parsed <- fromJSON(rawToChar(breweries$content))
+as.data.frame(brew_parsed)
+```
 
 
 ## Function Definitions
 
 This section is dedicated to showcasing all of the functions go into contacting the API, querying data, and performing our basic exploratory analysis.
 
-<details><summary>GET_OB_DataFrame</summary>
+### Get_OB_DataFrame
+
 
 ```{r API contact}
 Get_OB_DataFrame <- function(search_by, input) {
@@ -62,6 +70,4 @@ Get_OB_DataFrame <- function(search_by, input) {
   return(dt)
 }
 ```
-</details>
-
 

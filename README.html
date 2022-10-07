@@ -603,6 +603,16 @@ body {
 
 <h1 id="st-558-project-2">ST 558 Project 2</h1>
 <p>Melanie Kahn &amp; Bennett McAuley 2022-10-02</p>
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#requirements" id="toc-requirements">Requirements</a></li>
+<li><a href="#the-data" id="toc-the-data">The Data</a></li>
+<li><a href="#function-definitions" id="toc-function-definitions">Function
+Definitions</a>
+<ul>
+<li><a href="#get_ob_dataframe" id="toc-get_ob_dataframe">Get_OB_DataFrame</a></li>
+</ul></li>
+</ul>
 <h2 id="overview">Overview</h2>
 <p>The purpose and overall goal of this vignette is to instruct the user
 on how to contact an API using functions we created to query, parse, and
@@ -620,8 +630,6 @@ project.</p>
 <h2 id="the-data">The Data</h2>
 <p>This section provides the context and structure of the data to get a
 better understanding of the contents of the API.</p>
-<details>
-
 <p>The brewery data from Open Brewery DB features information on
 breweries, cideries, brewpubs, and bottleshops around the world. Using
 the <code>GET</code> function from the <code>httr</code> package, a list
@@ -637,37 +645,119 @@ of breweries is returned.</p>
 ##  $ all_headers:List of 1
 ##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
 ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-##  $ date       : POSIXct[1:1], format: &quot;2022-10-07 16:29:53&quot;
-##  $ times      : Named num [1:6] 0 0.000044 0.000045 0.000118 0.042652 ...
+##  $ date       : POSIXct[1:1], format: &quot;2022-10-07 17:01:24&quot;
+##  $ times      : Named num [1:6] 0.0096 0.0264 0.049 0.0634 0.0823 ...
 ##   ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;redirect&quot; &quot;namelookup&quot; &quot;connect&quot; &quot;pretransfer&quot; ...
 ##  $ request    :List of 7
 ##   ..- attr(*, &quot;class&quot;)= chr &quot;request&quot;
 ##  $ handle     :Class &#39;curl_handle&#39; &lt;externalptr&gt; 
 ##  - attr(*, &quot;class&quot;)= chr &quot;response&quot;</code></pre>
-</details>
-
+<p>This information isn’t very readable, so we will parse it using the
+<code>FromJSON</code> function from the <code>jsonlite</code> package,
+and represent the information as a tibble.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>brew_parsed <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(breweries<span class="sc">$</span>content))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(brew_parsed)</span></code></pre></div>
+<pre><code>##                                                  id                                          name brewery_type
+## 1                        10-56-brewing-company-knox                         10-56 Brewing Company        micro
+## 2                       10-barrel-brewing-co-bend-1                          10 Barrel Brewing Co        large
+## 3                       10-barrel-brewing-co-bend-2                          10 Barrel Brewing Co        large
+## 4                10-barrel-brewing-co-bend-pub-bend               10 Barrel Brewing Co - Bend Pub        large
+## 5                  10-barrel-brewing-co-boise-boise                  10 Barrel Brewing Co - Boise        large
+## 6                10-barrel-brewing-co-denver-denver                 10 Barrel Brewing Co - Denver        large
+## 7                     10-barrel-brewing-co-portland                          10 Barrel Brewing Co        large
+## 8                    10-barrel-brewing-co-san-diego                          10 Barrel Brewing Co        large
+## 9               10-torr-distilling-and-brewing-reno                10 Torr Distilling and Brewing        micro
+## 10                             101-brewery-quilcene                                   101 Brewery      brewpub
+## 11               101-north-brewing-company-petaluma                     101 North Brewing Company       closed
+## 12                  105-west-brewing-co-castle-rock                           105 West Brewing Co        micro
+## 13                                10k-brewing-anoka                                   10K Brewing        micro
+## 14           10th-district-brewing-company-abington                 10th District Brewing Company        micro
+## 15                 11-below-brewing-company-houston                      11 Below Brewing Company        micro
+## 16                         1188-brewing-co-john-day                               1188 Brewing Co      brewpub
+## 17               12-acres-brewing-company-killeshin                      12 Acres Brewing Company        micro
+## 18           12-gates-brewing-company-williamsville                      12 Gates Brewing Company      brewpub
+## 19                  12-west-brewing-company-gilbert                       12 West Brewing Company        micro
+## 20 12-west-brewing-company-production-facility-mesa 12 West Brewing Company - Production Facility        micro
+##                         street address_2 address_3          city         state county_province postal_code
+## 1                400 Brown Cir      &lt;NA&gt;        NA          Knox       Indiana            &lt;NA&gt;       46534
+## 2                62970 18th St      &lt;NA&gt;        NA          Bend        Oregon            &lt;NA&gt;  97701-9847
+## 3  1135 NW Galveston Ave Ste B      &lt;NA&gt;        NA          Bend        Oregon            &lt;NA&gt;  97703-2465
+## 4             62950 NE 18th St      &lt;NA&gt;        NA          Bend        Oregon            &lt;NA&gt;       97701
+## 5             826 W Bannock St      &lt;NA&gt;        NA         Boise         Idaho            &lt;NA&gt;  83702-5857
+## 6               2620 Walnut St      &lt;NA&gt;        NA        Denver      Colorado            &lt;NA&gt;  80205-2231
+## 7          1411 NW Flanders St      &lt;NA&gt;        NA      Portland        Oregon            &lt;NA&gt;  97209-2620
+## 8                    1501 E St      &lt;NA&gt;        NA     San Diego    California            &lt;NA&gt;  92101-6618
+## 9                  490 Mill St      &lt;NA&gt;        NA          Reno        Nevada            &lt;NA&gt;       89502
+## 10       294793 US Highway 101      &lt;NA&gt;        NA      Quilcene    Washington            &lt;NA&gt;  98376-9000
+## 11         1304 Scott St Ste D      &lt;NA&gt;        NA      Petaluma    California            &lt;NA&gt;  94954-7100
+## 12                1043 Park St      &lt;NA&gt;        NA   Castle Rock      Colorado            &lt;NA&gt;  80109-1585
+## 13                2005 2nd Ave      &lt;NA&gt;        NA         Anoka     Minnesota            &lt;NA&gt;  55303-2243
+## 14           491 Washington St      &lt;NA&gt;        NA      Abington Massachusetts            &lt;NA&gt;  02351-2419
+## 15           6820 Bourgeois Rd      &lt;NA&gt;        NA       Houston         Texas            &lt;NA&gt;  77066-3107
+## 16               141 E Main St      &lt;NA&gt;        NA      John Day        Oregon            &lt;NA&gt;  97845-1210
+## 17              Unnamed Street  Clonmore        NA     Killeshin          &lt;NA&gt;           Laois    R93 X3X8
+## 18        80 Earhart Dr Ste 20      &lt;NA&gt;        NA Williamsville      New York            &lt;NA&gt;  14221-7804
+## 19        3000 E Ray Rd Bldg 6      &lt;NA&gt;        NA       Gilbert       Arizona            &lt;NA&gt;  85296-7832
+## 20                        &lt;NA&gt;      &lt;NA&gt;        NA          Mesa       Arizona            &lt;NA&gt;       85207
+##          country           longitude           latitude         phone                        website_url
+## 1  United States          -86.627954          41.289715    6308165790                               &lt;NA&gt;
+## 2  United States -121.28170597038259  44.08683530625218    5415851007            http://www.10barrel.com
+## 3  United States -121.32880209261799 44.057564901366796    5415851007                               &lt;NA&gt;
+## 4  United States        -121.2809536         44.0912109    5415851007                               &lt;NA&gt;
+## 5  United States         -116.202929          43.618516    2083445870            http://www.10barrel.com
+## 6  United States        -104.9853655         39.7592508    7205738992                               &lt;NA&gt;
+## 7  United States        -122.6855056         45.5259786    5032241700            http://www.10barrel.com
+## 8  United States         -117.129593          32.714813    6195782311                http://10barrel.com
+## 9  United States        -119.7732015         39.5171702    7755307014              http://www.10torr.com
+## 10 United States -122.87558226136872 47.823475773720666    3607656485          http://www.101brewery.com
+## 11 United States -122.66505504468803 38.270293813150886    7077534934        http://www.101northbeer.com
+## 12 United States        -104.8667206        39.38269495    3033257321      http://www.105westbrewing.com
+## 13 United States        -93.38952559        45.19812039    7633924753                 http://10KBrew.com
+## 14 United States        -70.94594149        42.10591754    7813071554 http://www.10thdistrictbrewing.com
+## 15 United States         -95.5186591         29.9515464    2814442337      http://www.11belowbrewing.com
+## 16 United States        -118.9218754         44.4146563    5415751188         http://www.1188brewing.com
+## 17       Ireland        -6.979343891        52.84930763 +353599107299         https://12acresbrewing.ie/
+## 18 United States                &lt;NA&gt;               &lt;NA&gt;    7169066600      http://www.12gatesbrewing.com
+## 19 United States                &lt;NA&gt;               &lt;NA&gt;    6023395014       http://www.12westbrewing.com
+## 20 United States        -111.5860662          33.436188          &lt;NA&gt;                               &lt;NA&gt;
+##                  updated_at               created_at
+## 1  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 2  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 3  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 4  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 5  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 6  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 7  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 8  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 9  2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 10 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 11 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 12 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 13 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 14 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 15 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 16 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 17 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 18 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 19 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z
+## 20 2022-08-20T02:56:08.975Z 2022-08-20T02:56:08.975Z</code></pre>
 <h2 id="function-definitions">Function Definitions</h2>
 <p>This section is dedicated to showcasing all of the functions go into
 contacting the API, querying data, and performing our basic exploratory
 analysis.</p>
-<details>
-<summary>
-GET_OB_DataFrame
-</summary>
-
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(search_by, input) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (search_by <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;country&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;name&quot;</span>)) {</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries?by_&quot;</span>, search_by, <span class="st">&quot;=&quot;</span>, input))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="fu">stop</span>(<span class="st">&quot;Invalid search category. Please use one of these options: &#39;city&#39;, &#39;state&#39;, &#39;country&#39;, &#39;type&#39; or &#39;name&#39;.&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-</details>
+<h3 id="get_ob_dataframe">Get_OB_DataFrame</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(search_by, input) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (search_by <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;country&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;name&quot;</span>)) {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries?by_&quot;</span>, search_by, <span class="st">&quot;=&quot;</span>, input))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="fu">stop</span>(<span class="st">&quot;Invalid search category. Please use one of these options: &#39;city&#39;, &#39;state&#39;, &#39;country&#39;, &#39;type&#39; or &#39;name&#39;.&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 
 </body>
 </html>
