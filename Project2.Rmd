@@ -7,6 +7,9 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(httr)
+library(jsonlite)
+library(tidyverse)
 ```
 
 # Overview
@@ -35,7 +38,19 @@ str(breweries, max.level = 1)
 
 This section is dedicated to showcasing all of the functions go into contacting the API, querying data, and performing our basic exploratory analysis.
 
-```{r API contact}
+#### Get_OB_DataFrame
 
+```{r API contact}
+Get_OB_DataFrame <- function(search_by, input) {
+  if (search_by %in% c("city", "state", "country", "type", "name")) {
+    query <- GET(paste0("https://api.openbrewerydb.org/breweries?by_", search_by, "=", input))
+  } else stop("Invalid search category. Please use one of these options: 'city', 'state', 'country', 'type' or 'name'.")
+  
+  query_parse <- fromJSON(rawToChar(query$content))
+  
+  df <- as.data.frame(query_parse)
+  
+  return(df)
+}
 ```
 
