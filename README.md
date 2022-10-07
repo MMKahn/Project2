@@ -3,13 +3,6 @@ ST 558 Project 2
 Melanie Kahn & Bennett McAuley
 2022-10-02
 
-# Table of Contents
-
-1.  [The Data](#example)
-2.  [Function Definitions](#example2)
-3.  [Third Example](#third-example)
-4.  [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
-
 # Overview
 
 The purpose and overall goal of this vignette is to instruct the user on
@@ -51,8 +44,8 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-07 16:18:48"
-    ##  $ times      : Named num [1:6] 0 0.00005 0.000052 0.000129 0.033581 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-07 16:21:32"
+    ##  $ times      : Named num [1:6] 0 0.000074 0.000076 0.000178 0.027311 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
