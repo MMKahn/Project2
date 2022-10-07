@@ -13,7 +13,7 @@ library(tidyverse)
 ```
 
 
-# Overview
+## Overview
 
 The purpose and overall goal of this vignette is to instruct the user on how to contact an API using functions we created to query, parse, and return data in a well-structured format. These functions drive a basic exploratory analysis.
 
@@ -27,10 +27,12 @@ The following packages are required to run the code properly:
 - `jsonlite`
 - `tidyverse`
 
-### The Data
+## The Data
+
+This section provides the context and structure of the data to get a better understanding of the contents of the API.
 
 <details>
-The brewery data from Open Brewery DB features information on breweries, cideries, brewpubs, and bottleshops around the world. Using the `GET` function from the `httr` package, a list of breweries is returned. Let's explore the contents to get a better understanding of the structure.
+The brewery data from Open Brewery DB features information on breweries, cideries, brewpubs, and bottleshops around the world. Using the `GET` function from the `httr` package, a list of breweries is returned.
 
 ```{r}
 library(httr)
@@ -40,14 +42,11 @@ str(breweries, max.level = 1)
 </details>
 
 
+## Function Definitions
 
-
-### Function Definitions
-
-<details>
 This section is dedicated to showcasing all of the functions go into contacting the API, querying data, and performing our basic exploratory analysis.
 
-#### Get_OB_DataFrame
+<details><summary>GET_OB_DataFrame</summary>
 
 ```{r API contact}
 Get_OB_DataFrame <- function(search_by, input) {

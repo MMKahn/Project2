@@ -23,12 +23,14 @@ The following packages are required to run the code properly:
 
 ## The Data
 
+This section provides the context and structure of the data to get a
+better understanding of the contents of the API.
+
 <details>
 
 The brewery data from Open Brewery DB features information on breweries,
 cideries, brewpubs, and bottleshops around the world. Using the `GET`
-function from the `httr` package, a list of breweries is returned. Let’s
-explore the contents to get a better understanding of the structure.
+function from the `httr` package, a list of breweries is returned.
 
 ``` r
 library(httr)
@@ -44,8 +46,8 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-07 16:21:32"
-    ##  $ times      : Named num [1:6] 0 0.000074 0.000076 0.000178 0.027311 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-07 16:29:53"
+    ##  $ times      : Named num [1:6] 0 0.000044 0.000045 0.000118 0.042652 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
@@ -56,13 +58,14 @@ str(breweries, max.level = 1)
 
 ## Function Definitions
 
-<details>
-
 This section is dedicated to showcasing all of the functions go into
 contacting the API, querying data, and performing our basic exploratory
 analysis.
 
-#### Get_OB_DataFrame
+<details>
+<summary>
+GET_OB_DataFrame
+</summary>
 
 ``` r
 Get_OB_DataFrame <- function(search_by, input) {

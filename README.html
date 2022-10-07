@@ -603,7 +603,7 @@ body {
 
 <h1 id="st-558-project-2">ST 558 Project 2</h1>
 <p>Melanie Kahn &amp; Bennett McAuley 2022-10-02</p>
-<h1 id="overview">Overview</h1>
+<h2 id="overview">Overview</h2>
 <p>The purpose and overall goal of this vignette is to instruct the user
 on how to contact an API using functions we created to query, parse, and
 return data in a well-structured format. These functions drive a basic
@@ -617,14 +617,15 @@ project.</p>
 <li><code>jsonlite</code></li>
 <li><code>tidyverse</code></li>
 </ul>
-<h3 id="the-data">The Data</h3>
+<h2 id="the-data">The Data</h2>
+<p>This section provides the context and structure of the data to get a
+better understanding of the contents of the API.</p>
 <details>
 
 <p>The brewery data from Open Brewery DB features information on
 breweries, cideries, brewpubs, and bottleshops around the world. Using
 the <code>GET</code> function from the <code>httr</code> package, a list
-of breweries is returned. Let’s explore the contents to get a better
-understanding of the structure.</p>
+of breweries is returned.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>breweries <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(breweries, <span class="at">max.level =</span> <span class="dv">1</span>)</span></code></pre></div>
@@ -636,8 +637,8 @@ understanding of the structure.</p>
 ##  $ all_headers:List of 1
 ##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
 ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-##  $ date       : POSIXct[1:1], format: &quot;2022-10-07 16:21:32&quot;
-##  $ times      : Named num [1:6] 0 0.000074 0.000076 0.000178 0.027311 ...
+##  $ date       : POSIXct[1:1], format: &quot;2022-10-07 16:29:53&quot;
+##  $ times      : Named num [1:6] 0 0.000044 0.000045 0.000118 0.042652 ...
 ##   ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;redirect&quot; &quot;namelookup&quot; &quot;connect&quot; &quot;pretransfer&quot; ...
 ##  $ request    :List of 7
 ##   ..- attr(*, &quot;class&quot;)= chr &quot;request&quot;
@@ -645,13 +646,15 @@ understanding of the structure.</p>
 ##  - attr(*, &quot;class&quot;)= chr &quot;response&quot;</code></pre>
 </details>
 
-<h3 id="function-definitions">Function Definitions</h3>
-<details>
-
+<h2 id="function-definitions">Function Definitions</h2>
 <p>This section is dedicated to showcasing all of the functions go into
 contacting the API, querying data, and performing our basic exploratory
 analysis.</p>
-<h4 id="get_ob_dataframe">Get_OB_DataFrame</h4>
+<details>
+<summary>
+GET_OB_DataFrame
+</summary>
+
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(search_by, input) {</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (search_by <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;country&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;name&quot;</span>)) {</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries?by_&quot;</span>, search_by, <span class="st">&quot;=&quot;</span>, input))</span>
