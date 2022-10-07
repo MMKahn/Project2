@@ -3,6 +3,13 @@ ST 558 Project 2
 Melanie Kahn & Bennett McAuley
 2022-10-02
 
+# Table of Contents
+
+1.  [The Data](#example)
+2.  [Function Definitions](#example2)
+3.  [Third Example](#third-example)
+4.  [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+
 # Overview
 
 The purpose and overall goal of this vignette is to instruct the user on
@@ -23,6 +30,13 @@ The following packages are required to run the code properly:
 
 ### The Data
 
+<details>
+
+The brewery data from Open Brewery DB features information on breweries,
+cideries, brewpubs, and bottleshops around the world. Using the `GET`
+function from the `httr` package, a list of breweries is returned. Let’s
+explore the contents to get a better understanding of the structure.
+
 ``` r
 library(httr)
 breweries <- GET("https://api.openbrewerydb.org/breweries")
@@ -37,15 +51,19 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-07 01:19:36"
-    ##  $ times      : Named num [1:6] 0 0.000049 0.00005 0.00013 0.026579 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-07 16:18:48"
+    ##  $ times      : Named num [1:6] 0 0.00005 0.000052 0.000129 0.033581 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
     ##  $ handle     :Class 'curl_handle' <externalptr> 
     ##  - attr(*, "class")= chr "response"
 
+</details>
+
 ### Function Definitions
+
+<details>
 
 This section is dedicated to showcasing all of the functions go into
 contacting the API, querying data, and performing our basic exploratory
@@ -61,8 +79,11 @@ Get_OB_DataFrame <- function(search_by, input) {
   
   query_parse <- fromJSON(rawToChar(query$content))
   
-  df <- as.data.frame(query_parse)
+  dt <- as_tibble(query_parse) %>%
+    select(id, name, brewery_type, street, city, state, county_province, country)
   
-  return(df)
+  return(dt)
 }
 ```
+
+</details>

@@ -603,6 +603,14 @@ body {
 
 <h1 id="st-558-project-2">ST 558 Project 2</h1>
 <p>Melanie Kahn &amp; Bennett McAuley 2022-10-02</p>
+<h1 id="table-of-contents">Table of Contents</h1>
+<ol style="list-style-type: decimal">
+<li><a href="#example">The Data</a></li>
+<li><a href="#example2">Function Definitions</a></li>
+<li><a href="#third-example">Third Example</a></li>
+<li><a href="#fourth-examplehttpwwwfourthexamplecom">Fourth
+Example</a></li>
+</ol>
 <h1 id="overview">Overview</h1>
 <p>The purpose and overall goal of this vignette is to instruct the user
 on how to contact an API using functions we created to query, parse, and
@@ -618,6 +626,13 @@ project.</p>
 <li><code>tidyverse</code></li>
 </ul>
 <h3 id="the-data">The Data</h3>
+<details>
+
+<p>The brewery data from Open Brewery DB features information on
+breweries, cideries, brewpubs, and bottleshops around the world. Using
+the <code>GET</code> function from the <code>httr</code> package, a list
+of breweries is returned. Let’s explore the contents to get a better
+understanding of the structure.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>breweries <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries&quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(breweries, <span class="at">max.level =</span> <span class="dv">1</span>)</span></code></pre></div>
@@ -629,14 +644,18 @@ project.</p>
 ##  $ all_headers:List of 1
 ##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
 ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-##  $ date       : POSIXct[1:1], format: &quot;2022-10-07 01:19:36&quot;
-##  $ times      : Named num [1:6] 0 0.000049 0.00005 0.00013 0.026579 ...
+##  $ date       : POSIXct[1:1], format: &quot;2022-10-07 16:18:48&quot;
+##  $ times      : Named num [1:6] 0 0.00005 0.000052 0.000129 0.033581 ...
 ##   ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;redirect&quot; &quot;namelookup&quot; &quot;connect&quot; &quot;pretransfer&quot; ...
 ##  $ request    :List of 7
 ##   ..- attr(*, &quot;class&quot;)= chr &quot;request&quot;
 ##  $ handle     :Class &#39;curl_handle&#39; &lt;externalptr&gt; 
 ##  - attr(*, &quot;class&quot;)= chr &quot;response&quot;</code></pre>
+</details>
+
 <h3 id="function-definitions">Function Definitions</h3>
+<details>
+
 <p>This section is dedicated to showcasing all of the functions go into
 contacting the API, querying data, and performing our basic exploratory
 analysis.</p>
@@ -648,10 +667,12 @@ analysis.</p>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(query_parse)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
 
 </body>
 </html>
