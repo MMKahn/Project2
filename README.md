@@ -52,8 +52,8 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-07 17:06:45"
-    ##  $ times      : Named num [1:6] 0 0.000051 0.000053 0.000155 0.067129 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-07 17:18:10"
+    ##  $ times      : Named num [1:6] 0 0.000045 0.000046 0.000146 0.038071 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
@@ -66,7 +66,7 @@ information as a tibble.
 
 ``` r
 brew_parsed <- fromJSON(rawToChar(breweries$content))
-as.data.frame(brew_parsed)
+brew_parsed
 ```
 
     ##                                                  id                                          name brewery_type

@@ -45,7 +45,7 @@ This information isn't very readable, so we will parse it using the `FromJSON` f
 
 ```{r}
 brew_parsed <- fromJSON(rawToChar(breweries$content))
-as.data.frame(brew_parsed)
+brew_parsed
 ```
 
 
