@@ -45,9 +45,36 @@ This information isn't very readable, so we will parse it using the `FromJSON` f
 
 ```{r}
 brew_parsed <- fromJSON(rawToChar(breweries$content))
-brew_parsed
+as_tibble(brew_parsed)
 ```
 
+The variables present for each entry in this database are as follows:
+
+- `id` - The unique ID of the brewery
+- `name` - The name of the brewery
+- `brewery_type` - The type of brewery; must be one of:
+  - `micro` - Most craft breweries
+  - `nano` - An extremely small brewery that typically only distributes locally
+  - `regional` - Regional location of an expanded brewery
+  - `brewpub` - A beer-focused restaurant or bar with a brewery on-premise
+  - `planning` - A brewery in planning or not yet opened to the public
+  - `contract` - A brewery that uses another brewery's equipment
+  - `proprietor` - Similiar to contract brewing but refers more to a brewery incubator
+  - `closed` - A location that has closed
+- `street` - The street address of the brewery
+- `address_2` - 
+- `address_3`
+- `city`
+- `state`
+- `county_province`
+- `postal_code`
+- `country`
+- `longitude` - The distance from an origin point
+- `latitude` - _see `longitude`_
+- `phone`
+- `website_url`
+- `updated_at`
+- `created_at`
 
 ## Function Definitions
 
@@ -68,6 +95,6 @@ Get_OB_DataFrame <- function(search_by, input) {
     select(id, name, brewery_type, street, city, state, county_province, country)
   
   return(dt)
-}
+} 
 ```
 
