@@ -3,7 +3,7 @@ ST 558 Project 2
 Melanie Kahn & Bennett McAuley
 2022-10-02
 
-# Overview
+## Overview
 
 The purpose and overall goal of this vignette is to instruct the user on
 how to contact an API using functions we created to query, parse, and
@@ -21,7 +21,7 @@ The following packages are required to run the code properly:
 -   `jsonlite`
 -   `tidyverse`
 
-### The Data
+## The Data
 
 <details>
 
@@ -54,7 +54,7 @@ str(breweries, max.level = 1)
 
 </details>
 
-### Function Definitions
+## Function Definitions
 
 <details>
 
