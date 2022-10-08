@@ -82,19 +82,29 @@ This section is dedicated to showcasing all of the functions go into contacting 
 
 ### Get_OB_DataFrame
 
+The `Get_OB_DataFrame` function contacts the API and returns a tibble (a fancy data frame). It takes the following arguments:
+
+- `size` - The number of breweries to return as observations
+- `search_by` - The category of filtering to be applied to the search. Valid options are `"city"`, `"state"`, `"country"`, `"type"` (_for `brewery_type`, see above for values_), and `"name"`
+- `input` - The value or term to be searched for
+
+_Note: In testing, it was discovered that the querying functionality is not case sensitive (i.e. `"raleigh"`, `"Raleigh"`, and `"RALEIGH"` will all return the same thing), so inputting the values in sentence case is not necessary._
 
 ```{r API contact}
-Get_OB_DataFrame <- function(search_by, input) {
+Get_OB_DataFrame <- function(size, search_by, input) {
   if (search_by %in% c("city", "state", "country", "type", "name")) {
-    query <- GET(paste0("https://api.openbrewerydb.org/breweries?by_", search_by, "=", input))
-  } else stop("Invalid search category. Please use one of these options: 'city', 'state', 'country', 'type' or 'name'.")
-  
+    query <- GET(paste0("https://api.openbrewerydb.org/breweries?by_", search_by, "=", input, "&per_page=", size))
+  } else {
+    stop("Invalid search category. Please use one of these options: 'city', 'state', 'country', 'type' or 'name'.")
+  }
+
   query_parse <- fromJSON(rawToChar(query$content))
   
   dt <- as_tibble(query_parse) %>%
-    select(id, name, brewery_type, street, city, state, county_province, country)
+    select(id, name, brewery_type, street, city, state, county_province, country) %>%
+    arrange(name)
   
   return(dt)
-} 
+}
 ```
 

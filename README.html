@@ -645,8 +645,8 @@ of breweries is returned.</p>
 ##  $ all_headers:List of 1
 ##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
 ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-##  $ date       : POSIXct[1:1], format:  ...
-##  $ times      : Named num [1:6] 0 0.000043 0.000044 0.000126 0.042681 ...
+##  $ date       : POSIXct[1:1], format: &quot;2022-10-08 03:35:22&quot;
+##  $ times      : Named num [1:6] 0.0 6.3e-05 6.5e-05 2.1e-04 2.2e-02 ...
 ##   ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;redirect&quot; &quot;namelookup&quot; &quot;connect&quot; &quot;pretransfer&quot; ...
 ##  $ request    :List of 7
 ##   ..- attr(*, &quot;class&quot;)= chr &quot;request&quot;
@@ -658,36 +658,32 @@ and represent the information as a tibble.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>brew_parsed <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(breweries<span class="sc">$</span>content))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(brew_parsed)</span></code></pre></div>
 <pre><code>## # A tibble: 20 × 17
-##    id      name  brewe…¹ street addre…² addre…³ city 
-##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;
-##  1 10-56-… 10-5… micro   400 B… &lt;NA&gt;    NA      Knox 
-##  2 10-bar… 10 B… large   62970… &lt;NA&gt;    NA      Bend 
-##  3 10-bar… 10 B… large   1135 … &lt;NA&gt;    NA      Bend 
-##  4 10-bar… 10 B… large   62950… &lt;NA&gt;    NA      Bend 
-##  5 10-bar… 10 B… large   826 W… &lt;NA&gt;    NA      Boise
-##  6 10-bar… 10 B… large   2620 … &lt;NA&gt;    NA      Denv…
-##  7 10-bar… 10 B… large   1411 … &lt;NA&gt;    NA      Port…
-##  8 10-bar… 10 B… large   1501 … &lt;NA&gt;    NA      San …
-##  9 10-tor… 10 T… micro   490 M… &lt;NA&gt;    NA      Reno 
-## 10 101-br… 101 … brewpub 29479… &lt;NA&gt;    NA      Quil…
-## 11 101-no… 101 … closed  1304 … &lt;NA&gt;    NA      Peta…
-## 12 105-we… 105 … micro   1043 … &lt;NA&gt;    NA      Cast…
-## 13 10k-br… 10K … micro   2005 … &lt;NA&gt;    NA      Anoka
-## 14 10th-d… 10th… micro   491 W… &lt;NA&gt;    NA      Abin…
-## 15 11-bel… 11 B… micro   6820 … &lt;NA&gt;    NA      Hous…
-## 16 1188-b… 1188… brewpub 141 E… &lt;NA&gt;    NA      John…
-## 17 12-acr… 12 A… micro   Unnam… Clonmo… NA      Kill…
-## 18 12-gat… 12 G… brewpub 80 Ea… &lt;NA&gt;    NA      Will…
-## 19 12-wes… 12 W… micro   3000 … &lt;NA&gt;    NA      Gilb…
-## 20 12-wes… 12 W… micro   &lt;NA&gt;   &lt;NA&gt;    NA      Mesa 
-## # … with 10 more variables: state &lt;chr&gt;,
-## #   county_province &lt;chr&gt;, postal_code &lt;chr&gt;,
-## #   country &lt;chr&gt;, longitude &lt;chr&gt;, latitude &lt;chr&gt;,
-## #   phone &lt;chr&gt;, website_url &lt;chr&gt;,
-## #   updated_at &lt;chr&gt;, created_at &lt;chr&gt;, and
-## #   abbreviated variable names ¹​brewery_type,
-## #   ²​address_2, ³​address_3</code></pre>
-<p>The variables present in this database are as follows:</p>
+##    id     name  brewe…¹ street addre…² addre…³ city  state count…⁴ posta…⁵ country longi…⁶ latit…⁷ phone websi…⁸
+##    &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
+##  1 10-56… 10-5… micro   400 B… &lt;NA&gt;    NA      Knox  Indi… &lt;NA&gt;    46534   United… -86.62… 41.289… 6308… &lt;NA&gt;   
+##  2 10-ba… 10 B… large   62970… &lt;NA&gt;    NA      Bend  Oreg… &lt;NA&gt;    97701-… United… -121.2… 44.086… 5415… http:/…
+##  3 10-ba… 10 B… large   1135 … &lt;NA&gt;    NA      Bend  Oreg… &lt;NA&gt;    97703-… United… -121.3… 44.057… 5415… &lt;NA&gt;   
+##  4 10-ba… 10 B… large   62950… &lt;NA&gt;    NA      Bend  Oreg… &lt;NA&gt;    97701   United… -121.2… 44.091… 5415… &lt;NA&gt;   
+##  5 10-ba… 10 B… large   826 W… &lt;NA&gt;    NA      Boise Idaho &lt;NA&gt;    83702-… United… -116.2… 43.618… 2083… http:/…
+##  6 10-ba… 10 B… large   2620 … &lt;NA&gt;    NA      Denv… Colo… &lt;NA&gt;    80205-… United… -104.9… 39.759… 7205… &lt;NA&gt;   
+##  7 10-ba… 10 B… large   1411 … &lt;NA&gt;    NA      Port… Oreg… &lt;NA&gt;    97209-… United… -122.6… 45.525… 5032… http:/…
+##  8 10-ba… 10 B… large   1501 … &lt;NA&gt;    NA      San … Cali… &lt;NA&gt;    92101-… United… -117.1… 32.714… 6195… http:/…
+##  9 10-to… 10 T… micro   490 M… &lt;NA&gt;    NA      Reno  Neva… &lt;NA&gt;    89502   United… -119.7… 39.517… 7755… http:/…
+## 10 101-b… 101 … brewpub 29479… &lt;NA&gt;    NA      Quil… Wash… &lt;NA&gt;    98376-… United… -122.8… 47.823… 3607… http:/…
+## 11 101-n… 101 … closed  1304 … &lt;NA&gt;    NA      Peta… Cali… &lt;NA&gt;    94954-… United… -122.6… 38.270… 7077… http:/…
+## 12 105-w… 105 … micro   1043 … &lt;NA&gt;    NA      Cast… Colo… &lt;NA&gt;    80109-… United… -104.8… 39.382… 3033… http:/…
+## 13 10k-b… 10K … micro   2005 … &lt;NA&gt;    NA      Anoka Minn… &lt;NA&gt;    55303-… United… -93.38… 45.198… 7633… http:/…
+## 14 10th-… 10th… micro   491 W… &lt;NA&gt;    NA      Abin… Mass… &lt;NA&gt;    02351-… United… -70.94… 42.105… 7813… http:/…
+## 15 11-be… 11 B… micro   6820 … &lt;NA&gt;    NA      Hous… Texas &lt;NA&gt;    77066-… United… -95.51… 29.951… 2814… http:/…
+## 16 1188-… 1188… brewpub 141 E… &lt;NA&gt;    NA      John… Oreg… &lt;NA&gt;    97845-… United… -118.9… 44.414… 5415… http:/…
+## 17 12-ac… 12 A… micro   Unnam… Clonmo… NA      Kill… &lt;NA&gt;  Laois   R93 X3… Ireland -6.979… 52.849… +353… https:…
+## 18 12-ga… 12 G… brewpub 80 Ea… &lt;NA&gt;    NA      Will… New … &lt;NA&gt;    14221-… United… &lt;NA&gt;    &lt;NA&gt;    7169… http:/…
+## 19 12-we… 12 W… micro   3000 … &lt;NA&gt;    NA      Gilb… Ariz… &lt;NA&gt;    85296-… United… &lt;NA&gt;    &lt;NA&gt;    6023… http:/…
+## 20 12-we… 12 W… micro   &lt;NA&gt;   &lt;NA&gt;    NA      Mesa  Ariz… &lt;NA&gt;    85207   United… -111.5… 33.436… &lt;NA&gt;  &lt;NA&gt;   
+## # … with 2 more variables: updated_at &lt;chr&gt;, created_at &lt;chr&gt;, and abbreviated variable names ¹​brewery_type,
+## #   ²​address_2, ³​address_3, ⁴​county_province, ⁵​postal_code, ⁶​longitude, ⁷​latitude, ⁸​website_url</code></pre>
+<p>The variables present for each entry in this database are as
+follows:</p>
 <ul>
 <li><code>id</code> - The unique ID of the brewery</li>
 <li><code>name</code> - The name of the brewery</li>
@@ -728,18 +724,39 @@ more to a brewery incubator</li>
 contacting the API, querying data, and performing our basic exploratory
 analysis.</p>
 <h3 id="get_ob_dataframe">Get_OB_DataFrame</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(search_by, input) {</span>
+<p>The <code>Get_OB_DataFrame</code> function contacts the API and
+returns a tibble (a fancy data frame). It takes the following
+arguments:</p>
+<ul>
+<li><code>size</code> - The number of breweries to return as
+observations</li>
+<li><code>search_by</code> - The category of filtering to be applied to
+the search. Valid options are <code>&quot;city&quot;</code>, <code>&quot;state&quot;</code>,
+<code>&quot;country&quot;</code>, <code>&quot;type&quot;</code> (<em>for
+<code>brewery_type</code>, see above for values</em>), and
+<code>&quot;name&quot;</code></li>
+<li><code>input</code> - The value or term to be searched for</li>
+</ul>
+<p><em>Note: In testing, it was discovered that the querying
+functionality is not case sensitive (i.e. <code>&quot;raleigh&quot;</code>,
+<code>&quot;Raleigh&quot;</code>, and <code>&quot;RALEIGH&quot;</code> will all return the
+same thing), so inputting the values in sentence case is not
+necessary.</em></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(size, search_by, input) {</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (search_by <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;country&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;name&quot;</span>)) {</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries?by_&quot;</span>, search_by, <span class="st">&quot;=&quot;</span>, input))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="fu">stop</span>(<span class="st">&quot;Invalid search category. Please use one of these options: &#39;city&#39;, &#39;state&#39;, &#39;country&#39;, &#39;type&#39; or &#39;name&#39;.&quot;</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>} </span></code></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries?by_&quot;</span>, search_by, <span class="st">&quot;=&quot;</span>, input, <span class="st">&quot;&amp;per_page=&quot;</span>, size))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Invalid search category. Please use one of these options: &#39;city&#39;, &#39;state&#39;, &#39;country&#39;, &#39;type&#39; or &#39;name&#39;.&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country) <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(name)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 
 </body>
 </html>
