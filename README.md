@@ -1,7 +1,6 @@
 ST 558 Project 2
 ================
 Melanie Kahn & Bennett McAuley
-2022-10-02
 
 -   <a href="#overview" id="toc-overview">Overview</a>
 -   <a href="#requirements" id="toc-requirements">Requirements</a>
@@ -10,6 +9,9 @@ Melanie Kahn & Bennett McAuley
     Definitions</a>
     -   <a href="#get_ob_dataframe"
         id="toc-get_ob_dataframe">Get_OB_DataFrame</a>
+    -   <a href="#get_ob_random" id="toc-get_ob_random">Get_OB_Random</a>
+-   <a href="#exploratory-data-analysis"
+    id="toc-exploratory-data-analysis">Exploratory Data Analysis</a>
 
 ## Overview
 
@@ -52,8 +54,8 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-08 03:35:22"
-    ##  $ times      : Named num [1:6] 0.0 6.3e-05 6.5e-05 2.1e-04 2.2e-02 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-08 18:04:36"
+    ##  $ times      : Named num [1:6] 0 0.000051 0.000052 0.000134 0.023572 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
@@ -120,12 +122,19 @@ The variables present for each entry in this database are as follows:
 -   `county_province`
 -   `postal_code`
 -   `country`
--   `longitude` - The distance from an origin point
--   `latitude` - *see `longitude`*
+-   `longitude` - The vertical distance from an origin point
+-   `latitude` - The horizontal distance from an origin point
 -   `phone`
 -   `website_url`
 -   `updated_at`
 -   `created_at`
+
+Notice that some of the variables provide useful information that can be
+applied to data analysis; some cannot. This will be addressed by the
+functions (*see below*) that will query the data and return tibbles that
+are analysis-ready.
+
+[Back to Top](#top)
 
 ## Function Definitions
 
@@ -135,8 +144,10 @@ analysis.
 
 ### Get_OB_DataFrame
 
-The `Get_OB_DataFrame` function contacts the API and returns a tibble (a
-fancy data frame). It takes the following arguments:
+The `Get_OB_DataFrame` function contacts the API, runs a query based on
+values provided by the user, parses the data from the query, and returns
+a tibble with relevant and well-formatted variables. It takes the
+following arguments:
 
 -   `size` - The number of breweries to return as observations
 -   `search_by` - The category of filtering to be applied to the search.
@@ -147,7 +158,8 @@ fancy data frame). It takes the following arguments:
 *Note: In testing, it was discovered that the querying functionality is
 not case sensitive (i.e. `"raleigh"`, `"Raleigh"`, and `"RALEIGH"` will
 all return the same thing), so inputting the values in sentence case is
-not necessary.*
+not necessary. Inputting them in quotations on function call, however,
+is.*
 
 ``` r
 Get_OB_DataFrame <- function(size, search_by, input) {
@@ -166,3 +178,38 @@ Get_OB_DataFrame <- function(size, search_by, input) {
   return(dt)
 }
 ```
+
+[Back to Top](#top)
+
+### Get_OB_Random
+
+`Get_OB_Random` is functionally identical to `Get_OB_DataFrame`, but
+instead of the user specifying characteristics they want in the data,
+the observations are queried at random based on the following argument:
+
+-   `n` - The number of breweries to return as observations (default is
+    `5`). According to the API documentation, the maximum is `50`.
+
+*Note: In testing, it was verified that the randomness in the API is not
+really random; there is a seed associated with it as the queries yielded
+the same results per value of `n`, regardless of whether a seed was
+speicifed in the R environment.*
+
+``` r
+Get_OB_Random <- function(n = 5) {
+  
+  query <- GET(paste0("https://api.openbrewerydb.org/breweries/random?size=", n))
+
+  query_parse <- fromJSON(rawToChar(query$content))
+  
+  dt <- as_tibble(query_parse) %>%
+    select(id, name, brewery_type, street, city, state, county_province, country) %>%
+    arrange(name)
+  
+  return(dt)
+}
+```
+
+[Back to Top](#top)
+
+## Exploratory Data Analysis
