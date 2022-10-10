@@ -616,18 +616,20 @@ Definitions</a>
 <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis">Exploratory Data Analysis</a></li>
 </ul>
 <h2 id="overview">Overview</h2>
-<p>The purpose and overall goal of this vignette is to instruct the user
+<p>The purpose and overall goal of this vignette is provide instruction
 on how to contact an API using functions we created to query, parse, and
 return data in a well-structured format. These functions drive a basic
 exploratory analysis.</p>
 <p>This vignette makes use of the beer data API by the <a href="https://www.openbrewerydb.org/faq">Open Brewery DB</a>
 project.</p>
 <h2 id="requirements">Requirements</h2>
-<p>The following packages are required to run the code properly:</p>
+<p>The following packages should be installed and loaded to run the code
+successfully:</p>
 <ul>
-<li><code>httr</code></li>
-<li><code>jsonlite</code></li>
-<li><code>tidyverse</code></li>
+<li><code>httr</code> - Tools for working with URLs and HTTP</li>
+<li><code>jsonlite</code> - JSON parser and generator for R</li>
+<li><code>tidyverse</code> - Collection of packages for data science
+using “tidy data”</li>
 </ul>
 <h2 id="the-data">The Data</h2>
 <p>This section provides the context and structure of the data to get a
@@ -647,8 +649,8 @@ of breweries is returned.</p>
 ##  $ all_headers:List of 1
 ##  $ cookies    :&#39;data.frame&#39;: 0 obs. of  7 variables:
 ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-##  $ date       : POSIXct[1:1], format: &quot;2022-10-08 18:04:36&quot;
-##  $ times      : Named num [1:6] 0 0.000051 0.000052 0.000134 0.023572 ...
+##  $ date       : POSIXct[1:1], format: &quot;2022-10-10 18:24:58&quot;
+##  $ times      : Named num [1:6] 0 0.000046 0.000047 0.000125 0.04003 ...
 ##   ..- attr(*, &quot;names&quot;)= chr [1:6] &quot;redirect&quot; &quot;namelookup&quot; &quot;connect&quot; &quot;pretransfer&quot; ...
 ##  $ request    :List of 7
 ##   ..- attr(*, &quot;class&quot;)= chr &quot;request&quot;
@@ -688,7 +690,7 @@ and represent the information as a tibble.</p>
 follows:</p>
 <ul>
 <li><code>id</code> - The unique ID of the brewery</li>
-<li><code>name</code> - The name of the brewery</li>
+<li><code>name</code></li>
 <li><code>brewery_type</code> - The type of brewery; must be one of:
 <ul>
 <li><code>micro</code> - Most craft breweries</li>
@@ -707,7 +709,7 @@ more to a brewery incubator</li>
 <li><code>closed</code> - A location that has closed</li>
 </ul></li>
 <li><code>street</code> - The street address of the brewery</li>
-<li><code>address_2</code> -</li>
+<li><code>address_2</code></li>
 <li><code>address_3</code></li>
 <li><code>city</code></li>
 <li><code>state</code></li>
@@ -724,9 +726,9 @@ point</li>
 <li><code>created_at</code></li>
 </ul>
 <p>Notice that some of the variables provide useful information that can
-be applied to data analysis; some cannot. This will be addressed by the
-functions (<em>see below</em>) that will query the data and return
-tibbles that are analysis-ready.</p>
+be applied to data analysis; some cannot (<code>website_url</code>, for
+instance). This will be addressed by the functions (<em>see below</em>)
+that will query the data and return tibbles that are analysis-ready.</p>
 <p><a href="#top">Back to Top</a></p>
 <h2 id="function-definitions">Function Definitions</h2>
 <p>This section is dedicated to showcasing all of the functions go into
@@ -739,12 +741,19 @@ query, and returns a tibble with relevant and well-formatted variables.
 It takes the following arguments:</p>
 <ul>
 <li><code>size</code> - The number of breweries to return as
-observations</li>
+observations (default is <code>10</code>)</li>
 <li><code>search_by</code> - The category of filtering to be applied to
-the search. Valid options are <code>&quot;city&quot;</code>, <code>&quot;state&quot;</code>,
-<code>&quot;country&quot;</code>, <code>&quot;type&quot;</code> (<em>for
-<code>brewery_type</code>, see above for values</em>), and
-<code>&quot;name&quot;</code></li>
+the search. Valid options are:
+<ul>
+<li><code>&quot;city&quot;</code></li>
+<li><code>&quot;state&quot;</code></li>
+<li><code>&quot;country&quot;</code></li>
+<li><code>&quot;type&quot;</code> (<em><code>brewery_type</code>, see above for
+values</em>)</li>
+<li><code>&quot;name&quot;</code></li>
+<li><code>&quot;dist&quot;</code> (_must be denoted by
+<code>&quot;&lt;latitude&gt;,&lt;longitude&gt;&quot;</code>–e.g. <code>&quot;45,37&quot;</code>)</li>
+</ul></li>
 <li><code>input</code> - The value or term to be searched for</li>
 </ul>
 <p><em>Note: In testing, it was discovered that the querying
@@ -752,21 +761,29 @@ functionality is not case sensitive (i.e. <code>&quot;raleigh&quot;</code>,
 <code>&quot;Raleigh&quot;</code>, and <code>&quot;RALEIGH&quot;</code> will all return the
 same thing), so inputting the values in sentence case is not necessary.
 Inputting them in quotations on function call, however, is.</em></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(size, search_by, input) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (search_by <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;country&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;name&quot;</span>)) {</span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Get_OB_DataFrame <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">size =</span> <span class="dv">10</span>, search_by, input) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (search_by <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;country&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;name&quot;</span>, <span class="st">&quot;dist&quot;</span>)) {</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries?by_&quot;</span>, search_by, <span class="st">&quot;=&quot;</span>, input, <span class="st">&quot;&amp;per_page=&quot;</span>, size))</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Invalid search category. Please use one of these options: &#39;city&#39;, &#39;state&#39;, &#39;country&#39;, &#39;type&#39; or &#39;name&#39;.&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Invalid search category. Please use one of these options: &#39;city&#39;, &#39;state&#39;, &#39;country&#39;, &#39;type&#39; &#39;name&#39;, or &#39;dist&#39;.&quot;</span>)</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country) <span class="sc">%&gt;%</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(name)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, city, state, county_province, country, latitude, longitude) <span class="sc">%&gt;%</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">brewery_type =</span> <span class="fu">as.factor</span>(brewery_type), <span class="at">longitude =</span> <span class="fu">as.numeric</span>(longitude), <span class="at">latitude =</span> <span class="fu">as.numeric</span>(latitude)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(name)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="usage-examples">Usage Examples:</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_DataFrame</span>(<span class="at">size =</span> <span class="dv">50</span>, <span class="at">search_by =</span> <span class="st">&quot;city&quot;</span>, <span class="at">input =</span> <span class="st">&quot;Dublin&quot;</span>) <span class="co">#returns 50 breweries in cities called &#39;Dublin&#39;--not just the one in Ireland!</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_DataFrame</span>(<span class="dv">7</span>, <span class="st">&quot;state&quot;</span>, <span class="st">&quot;North Carolina&quot;</span>) <span class="co">#returns 7 breweries in North Carolina</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_DataFrame</span>(<span class="at">search_by =</span> <span class="st">&quot;country&quot;</span>, <span class="at">input =</span> <span class="st">&quot;South Korea&quot;</span>) <span class="co">#returns default number of breweries in South Korea</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_DataFrame</span>(<span class="at">size =</span> <span class="dv">20</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;nano&quot;</span>) <span class="co">#return 20 nano breweries</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_DataFrame</span>(<span class="at">search_by =</span> <span class="st">&quot;name&quot;</span>, <span class="at">input =</span> <span class="st">&quot;wine&quot;</span>) <span class="co">#returns default number of breweries with the term &#39;wine&#39; contained within their names</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_DataFrame</span>(<span class="at">size =</span> <span class="dv">5</span>, <span class="st">&quot;dist&quot;</span>, <span class="st">&quot;41.9,12.4&quot;</span>) <span class="co">#returns 5 closest breweries (that have non-NA values) to specified coordinates -- Lat 41.9, Long 12.4 (Rome, Italy)</span></span></code></pre></div>
 <p><a href="#top">Back to Top</a></p>
 <h3 id="get_ob_random">Get_OB_Random</h3>
 <p><code>Get_OB_Random</code> is functionally identical to
@@ -782,18 +799,24 @@ maximum is <code>50</code>.</li>
 is not really random; there is a seed associated with it as the queries
 yielded the same results per value of <code>n</code>, regardless of
 whether a seed was speicifed in the R environment.</em></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Get_OB_Random <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">5</span>) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries/random?size=&quot;</span>, n))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, street, city, state, county_province, country) <span class="sc">%&gt;%</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(name)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Get_OB_Random <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">5</span>) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  query <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="fu">paste0</span>(<span class="st">&quot;https://api.openbrewerydb.org/breweries/random?size=&quot;</span>, n))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  query_parse <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="fu">rawToChar</span>(query<span class="sc">$</span>content))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(query_parse) <span class="sc">%&gt;%</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(id, name, brewery_type, city, state, county_province, country, latitude, longitude) <span class="sc">%&gt;%</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">brewery_type =</span> <span class="fu">as.factor</span>(brewery_type), <span class="at">longitude =</span> <span class="fu">as.numeric</span>(longitude), <span class="at">latitude =</span> <span class="fu">as.numeric</span>(latitude)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(name)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dt)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="usage-examples-1">Usage Examples</h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_Random</span>() <span class="co">#returns default number of randomly selected breweries</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_Random</span>(<span class="dv">20</span>) <span class="co">#returns 20 randomly selected breweries</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Get_OB_Random</span>(<span class="dv">75</span>) <span class="co">#returns 50 randomly selected breweries; API will still execute the query, but caps the number of observations returned at 50</span></span></code></pre></div>
 <p><a href="#top">Back to Top</a></p>
 <h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
 

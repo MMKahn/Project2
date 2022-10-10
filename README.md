@@ -15,7 +15,7 @@ Melanie Kahn & Bennett McAuley
 
 ## Overview
 
-The purpose and overall goal of this vignette is to instruct the user on
+The purpose and overall goal of this vignette is provide instruction on
 how to contact an API using functions we created to query, parse, and
 return data in a well-structured format. These functions drive a basic
 exploratory analysis.
@@ -25,11 +25,13 @@ DB](https://www.openbrewerydb.org/faq) project.
 
 ## Requirements
 
-The following packages are required to run the code properly:
+The following packages should be installed and loaded to run the code
+successfully:
 
--   `httr`
--   `jsonlite`
--   `tidyverse`
+-   `httr` - Tools for working with URLs and HTTP
+-   `jsonlite` - JSON parser and generator for R
+-   `tidyverse` - Collection of packages for data science using “tidy
+    data”
 
 ## The Data
 
@@ -54,8 +56,8 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-08 18:04:36"
-    ##  $ times      : Named num [1:6] 0 0.000051 0.000052 0.000134 0.023572 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-10 18:24:58"
+    ##  $ times      : Named num [1:6] 0 0.000046 0.000047 0.000125 0.04003 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
@@ -100,7 +102,7 @@ as_tibble(brew_parsed)
 The variables present for each entry in this database are as follows:
 
 -   `id` - The unique ID of the brewery
--   `name` - The name of the brewery
+-   `name`
 -   `brewery_type` - The type of brewery; must be one of:
     -   `micro` - Most craft breweries
     -   `nano` - An extremely small brewery that typically only
@@ -115,7 +117,7 @@ The variables present for each entry in this database are as follows:
         brewery incubator
     -   `closed` - A location that has closed
 -   `street` - The street address of the brewery
--   `address_2` -
+-   `address_2`
 -   `address_3`
 -   `city`
 -   `state`
@@ -130,9 +132,9 @@ The variables present for each entry in this database are as follows:
 -   `created_at`
 
 Notice that some of the variables provide useful information that can be
-applied to data analysis; some cannot. This will be addressed by the
-functions (*see below*) that will query the data and return tibbles that
-are analysis-ready.
+applied to data analysis; some cannot (`website_url`, for instance).
+This will be addressed by the functions (*see below*) that will query
+the data and return tibbles that are analysis-ready.
 
 [Back to Top](#top)
 
@@ -149,10 +151,17 @@ values provided by the user, parses the data from the query, and returns
 a tibble with relevant and well-formatted variables. It takes the
 following arguments:
 
--   `size` - The number of breweries to return as observations
+-   `size` - The number of breweries to return as observations (default
+    is `10`)
 -   `search_by` - The category of filtering to be applied to the search.
-    Valid options are `"city"`, `"state"`, `"country"`, `"type"` (*for
-    `brewery_type`, see above for values*), and `"name"`
+    Valid options are:
+    -   `"city"`
+    -   `"state"`
+    -   `"country"`
+    -   `"type"` (*`brewery_type`, see above for values*)
+    -   `"name"`
+    -   `"dist"` (\_must be denoted by
+        `"<latitude>,<longitude>"`–e.g. `"45,37"`)
 -   `input` - The value or term to be searched for
 
 *Note: In testing, it was discovered that the querying functionality is
@@ -162,21 +171,33 @@ not necessary. Inputting them in quotations on function call, however,
 is.*
 
 ``` r
-Get_OB_DataFrame <- function(size, search_by, input) {
-  if (search_by %in% c("city", "state", "country", "type", "name")) {
+Get_OB_DataFrame <- function(size = 10, search_by, input) {
+  if (search_by %in% c("city", "state", "country", "type", "name", "dist")) {
     query <- GET(paste0("https://api.openbrewerydb.org/breweries?by_", search_by, "=", input, "&per_page=", size))
   } else {
-    stop("Invalid search category. Please use one of these options: 'city', 'state', 'country', 'type' or 'name'.")
+    stop("Invalid search category. Please use one of these options: 'city', 'state', 'country', 'type' 'name', or 'dist'.")
   }
 
   query_parse <- fromJSON(rawToChar(query$content))
   
   dt <- as_tibble(query_parse) %>%
-    select(id, name, brewery_type, street, city, state, county_province, country) %>%
+    select(id, name, brewery_type, city, state, county_province, country, latitude, longitude) %>%
+    mutate(brewery_type = as.factor(brewery_type), longitude = as.numeric(longitude), latitude = as.numeric(latitude)) %>%
     arrange(name)
   
   return(dt)
 }
+```
+
+#### Usage Examples:
+
+``` r
+Get_OB_DataFrame(size = 50, search_by = "city", input = "Dublin") #returns 50 breweries in cities called 'Dublin'--not just the one in Ireland!
+Get_OB_DataFrame(7, "state", "North Carolina") #returns 7 breweries in North Carolina
+Get_OB_DataFrame(search_by = "country", input = "South Korea") #returns default number of breweries in South Korea
+Get_OB_DataFrame(size = 20, "type", "nano") #return 20 nano breweries
+Get_OB_DataFrame(search_by = "name", input = "wine") #returns default number of breweries with the term 'wine' contained within their names
+Get_OB_DataFrame(size = 5, "dist", "41.9,12.4") #returns 5 closest breweries (that have non-NA values) to specified coordinates -- Lat 41.9, Long 12.4 (Rome, Italy)
 ```
 
 [Back to Top](#top)
@@ -203,11 +224,21 @@ Get_OB_Random <- function(n = 5) {
   query_parse <- fromJSON(rawToChar(query$content))
   
   dt <- as_tibble(query_parse) %>%
-    select(id, name, brewery_type, street, city, state, county_province, country) %>%
+    select(id, name, brewery_type, city, state, county_province, country, latitude, longitude) %>%
+    mutate(brewery_type = as.factor(brewery_type), longitude = as.numeric(longitude), latitude = as.numeric(latitude)) %>%
     arrange(name)
+    
   
   return(dt)
 }
+```
+
+#### Usage Examples
+
+``` r
+Get_OB_Random() #returns default number of randomly selected breweries
+Get_OB_Random(20) #returns 20 randomly selected breweries
+Get_OB_Random(75) #returns 50 randomly selected breweries; API will still execute the query, but caps the number of observations returned at 50
 ```
 
 [Back to Top](#top)
