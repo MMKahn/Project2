@@ -168,9 +168,27 @@ Get_OB_Random(75) #returns 50 randomly selected breweries; API will still execut
 ### Pulling the Data
 _at least two calls of obtaining data function(s) (possibly combining into one)_
 
+First, we will pull data from the API to create new tibbles `CO_Brew` with 50 breweries in the state of Colorado and `CA_Brew` with 50 breweries in the state of California using the `Get_OB_DataFrame()` function to contact, query, and parse the API data. 
+
+```{r}
+CO_Brew <- Get_OB_DataFrame(size = 50, search_by = "state", input = "Colorado")
+CO_Brew
+
+CA_Brew <- Get_OB_DataFrame(size = 50, search_by = "state", input = "California")
+CA_Brew
+```
+
 ### Manipulations
 
 _create at least one new variable that is a function of other vars_
+
+A new variable column named `regions` is added to the California breweries tibble `CA_Brew` that further categorizes the breweries according to their location in California. Historically, the state is separated into Northern and Southern California based on their geography. The Northern California region is mountainous and volcanic causing more dynamic weather, whereas Southern California is flat with gradual faults and arid deserts. The administrative line that connects San Luis Obispo, Kern, and San Bernardino counties creates the boundary between the two regions. The latitude measurement for this boundary line is 35.8°N. Therefore, to create this new variable, and brewery with a latitude less than or equal to 35.8 is located in the Southern region of California while anything greater than 35.8 is located in the Northern region of California.
+
+```{r}
+CA_Brew$regions <- ifelse(CA_Brew$latitude <= 35.8, "Southern", "Northern")
+CA_Brew
+```
+
 
 ### Summaries
 
