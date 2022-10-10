@@ -165,4 +165,19 @@ Get_OB_Random(75) #returns 50 randomly selected breweries; API will still execut
 
 ## Exploratory Data Analysis
 
+### Pulling the Data
+_at least two calls of obtaining data function(s) (possibly combining into one)_
+
+### Manipulations
+
+_create at least one new variable that is a function of other vars_
+
+### Summaries
+
+_some contingency tables, numerical summaries for some quantitative variables at each setting of some categorical variables (may not be inherently relevant to our data...)_
+
+### Plots
+
+_at least 5 plots with nice labels and titles; one bar, one histogram, one box, and one scatter_
+
 
