@@ -50,7 +50,7 @@ as_tibble(brew_parsed)
 The variables present for each entry in this database are as follows:
 
 - `id` - The unique ID of the brewery
-- `name`
+- `name` - The name of the brewery
 - `brewery_type` - The type of brewery; must be one of:
   - `micro` - Most craft breweries
   - `nano` - An extremely small brewery that typically only distributes locally
@@ -61,19 +61,19 @@ The variables present for each entry in this database are as follows:
   - `proprietor` - Similiar to contract brewing but refers more to a brewery incubator
   - `closed` - A location that has closed
 - `street` - The street address of the brewery
-- `address_2`
-- `address_3`
-- `city`
-- `state`
-- `county_province`
-- `postal_code`
-- `country`
+- `address_2` - Typically, the district the brewery is in (if appl.)
+- `address_3` - `null`
+- `city` - The city the brewery is in
+- `state` - The state the brewery is in (US only)
+- `county_province` - The county or province the brewery is in
+- `postal_code` - The postal code of the brewery
+- `country` - The country the brewery is in
 - `longitude` - The vertical distance from an origin point
 - `latitude` - The horizontal distance from an origin point
-- `phone`
-- `website_url`
-- `updated_at`
-- `created_at`
+- `phone` - The phone number of the brewery (if it has one)
+- `website_url` - The website of the brewery (if it has one)
+- `updated_at` - Timestamp for when the observation was updated in the database
+- `created_at` - Timestamp for when the observation was created in the database
 
 Notice that some of the variables provide useful information that can be applied to data analysis; some cannot (`website_url`, for instance). This will be addressed by the functions (_see below_) that will query the data and return tibbles that are analysis-ready.
 

@@ -61,8 +61,8 @@ str(breweries, max.level = 1)
     ##  $ all_headers:List of 1
     ##  $ cookies    :'data.frame': 0 obs. of  7 variables:
     ##  $ content    : raw [1:9168] 5b 7b 22 69 ...
-    ##  $ date       : POSIXct[1:1], format: "2022-10-11 14:55:47"
-    ##  $ times      : Named num [1:6] 0 0.000043 0.000044 0.000113 0.026432 ...
+    ##  $ date       : POSIXct[1:1], format: "2022-10-11 17:45:34"
+    ##  $ times      : Named num [1:6] 0 0.000073 0.000075 0.000201 0.030565 ...
     ##   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
     ##  $ request    :List of 7
     ##   ..- attr(*, "class")= chr "request"
@@ -107,7 +107,7 @@ as_tibble(brew_parsed)
 The variables present for each entry in this database are as follows:
 
 -   `id` - The unique ID of the brewery
--   `name`
+-   `name` - The name of the brewery
 -   `brewery_type` - The type of brewery; must be one of:
     -   `micro` - Most craft breweries
     -   `nano` - An extremely small brewery that typically only
@@ -122,19 +122,21 @@ The variables present for each entry in this database are as follows:
         brewery incubator
     -   `closed` - A location that has closed
 -   `street` - The street address of the brewery
--   `address_2`
--   `address_3`
--   `city`
--   `state`
--   `county_province`
--   `postal_code`
--   `country`
+-   `address_2` - Typically, the district the brewery is in (if appl.)
+-   `address_3` - `null`
+-   `city` - The city the brewery is in
+-   `state` - The state the brewery is in (US only)
+-   `county_province` - The county or province the brewery is in
+-   `postal_code` - The postal code of the brewery
+-   `country` - The country the brewery is in
 -   `longitude` - The vertical distance from an origin point
 -   `latitude` - The horizontal distance from an origin point
--   `phone`
--   `website_url`
--   `updated_at`
--   `created_at`
+-   `phone` - The phone number of the brewery (if it has one)
+-   `website_url` - The website of the brewery (if it has one)
+-   `updated_at` - Timestamp for when the observation was updated in the
+    database
+-   `created_at` - Timestamp for when the observation was created in the
+    database
 
 Notice that some of the variables provide useful information that can be
 applied to data analysis; some cannot (`website_url`, for instance).
@@ -523,6 +525,46 @@ USA_Brew2
     ## 10 Michigan         42.3    -84.4       42.3       -84.4
     ## # … with 15 more rows
 
+Running the code chunk below creates a summary statistics table showing
+the average (`mean()`) and median (`median()`) for the latitude and
+longitude values in Irish and English breweries according to `country`
+and county province (`county_province`) rounded to the nearest
+hundredth. The first row indicates that, according to the 100 random
+breweries selected from Ireland and England to make up the `IreEng_Brew`
+data set, breweries in East Sussex, England have average coordinates of
+(50.90°N, 0.08°E) and median coordinates of (50.87°N, 0.02°E).
+
+``` r
+IreEng_Brew2 <- IreEng_Brew %>%
+  group_by(country, county_province) %>%
+  summarize(Avg_Lat = round(mean(latitude), digits = 2),
+            Avg_Long = round(mean(longitude), digits = 2),
+            Median_Lat = round(median(latitude), digits = 2),
+            Median_Long = round(median(longitude), digits = 2))
+```
+
+    ## `summarise()` has grouped output by 'country'. You can override using the `.groups` argument.
+
+``` r
+IreEng_Brew2
+```
+
+    ## # A tibble: 25 × 6
+    ## # Groups:   country [2]
+    ##    country county_province Avg_Lat Avg_Long Median_Lat Median_Long
+    ##    <chr>   <chr>             <dbl>    <dbl>      <dbl>       <dbl>
+    ##  1 England East Sussex        50.9     0.08       50.9        0.02
+    ##  2 England West Sussex        51.0    -0.36       50.9       -0.33
+    ##  3 Ireland Carlow             52.7    -6.98       52.7       -6.98
+    ##  4 Ireland Clare              53.0    -9.29       53.0       -9.29
+    ##  5 Ireland Cork               51.9    -8.46       51.9       -8.48
+    ##  6 Ireland Donegal            54.8    -7.71       54.9       -7.69
+    ##  7 Ireland Dublin             53.3    -6.29       53.3       -6.29
+    ##  8 Ireland Galway             53.4    -9.29       53.3       -8.93
+    ##  9 Ireland Kerry              52.0    -9.51       52.0       -9.51
+    ## 10 Ireland Kildare            53.3    -6.6        53.3       -6.6 
+    ## # … with 15 more rows
+
 [Back to Top](#top)
 
 ### Plots
@@ -552,7 +594,7 @@ g + geom_bar(stat = "count", position = "dodge") +
   scale_fill_discrete(name = "Country")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 [Back to Top](#top)
 
@@ -578,7 +620,7 @@ g2 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "brown", fill = "yellow"
   labs(title = "Histogram of Latitude Values for USA Breweries", x = "Latitude", y = "Count")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 Running the code chunk below modifies the previous histogram to
 visualize the distribution of latitude values by type of brewery for
@@ -599,7 +641,7 @@ g3 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "black") +
   labs(title = "Histogram of Latitude Values for USA Brewery Types", x = "Latitude", y = "Count", fill = "Type of Brewery")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 [Back to Top](#top)
 
@@ -646,7 +688,7 @@ g4 + geom_boxplot(na.rm = TRUE) +
   labs(title = "Box Plot of USA Brewery Latitudes", x = "Type of Brewery", y = "Latitude Coordinate", color = "Type of Brewery")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
 
 [Back to Top](#top)
 
@@ -684,6 +726,6 @@ g5 + geom_point(aes(color = regions)) +
 
     ## `geom_smooth()` using formula 'y ~ x'
 
-![](README_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 [Back to Top](#top)
