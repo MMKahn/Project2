@@ -120,10 +120,10 @@ Get_OB_DataFrame <- function(size = 10, search_by, input) {
 
 #### Usage Examples:
 ```{r df usage, eval = FALSE}
-Get_OB_DataFrame(size = 50, search_by = "city", input = "Dublin") #returns 50 breweries in cities called 'Dublin'--not just the one in Ireland!
+Get_OB_DataFrame(size = 50, search_by = "city", input = "Dublin") #returns 12 breweries in cities called 'Dublin'--not just the one in Ireland! Despite 50 being asked for, there are only 12 that match the query
 Get_OB_DataFrame(7, "state", "North Carolina") #returns 7 breweries in North Carolina
 Get_OB_DataFrame(search_by = "country", input = "South Korea") #returns default number of breweries in South Korea
-Get_OB_DataFrame(size = 20, "type", "nano") #return 20 nano breweries
+Get_OB_DataFrame(size = 20, "type", "nano") #return 5 nano breweries since only 5 match the query
 Get_OB_DataFrame(search_by = "name", input = "wine") #returns default number of breweries with the term 'wine' contained within their names
 Get_OB_DataFrame(size = 5, "dist", "41.9,12.4") #returns 5 closest breweries (that have non-NA values) to specified coordinates -- Lat 41.9, Long 12.4 (Rome, Italy)
 ```
@@ -166,7 +166,6 @@ Get_OB_Random(75) #returns 50 randomly selected breweries; API will still execut
 ## Exploratory Data Analysis
 
 ### Pulling the Data
-_at least two calls of obtaining data function(s) (possibly combining into one)_
 
 First, we will pull data from the API to create new tibbles using the `Get_OB_DataFrame()` function to contact, query, and parse the API data. `CA_Brew` is a new tibble with 50 breweries in the state of California; `IreEng_Brew` is a new tibble with 100 breweries, 50 in Ireland and 50 in England; and `USA_Brew` is a new tibble with 50 breweries located within the United States.
 
@@ -183,9 +182,9 @@ USA_Brew <- Get_OB_DataFrame(size = 50, search_by = "country", input = "United S
 USA_Brew
 ```
 
-### Manipulations
+[Back to Top](#top)
 
-_create at least one new variable that is a function of other vars_
+### Manipulations
 
 A new variable column named `regions` is added to the California breweries tibble `CA_Brew` that further categorizes the breweries according to their location in California. Historically, the state is separated into Northern and Southern California based on their geography. The Northern California region is mountainous and volcanic causing more dynamic weather, whereas Southern California is flat with gradual faults and arid deserts. The administrative line that connects San Luis Obispo, Kern, and San Bernardino counties creates the boundary between the two regions. The latitude measurement for this boundary line is 35.8°N. Therefore, to create this new variable, and brewery with a latitude less than or equal to 35.8 is located in the Southern region of California while anything greater than 35.8 is located in the Northern region of California.
 
@@ -204,9 +203,10 @@ USA_Brew <- USA_Brew %>%
                                           if_else(state %in% c("Arizona", "Colorado", "Idaho", "New Mexico", "Montana", "Utah", "Nevada", "Wyoming", "Alaska", "California", "Hawaii", "Oregon", "Washington"), "West", "ERROR")))))
 USA_Brew
 ```
-### Summaries
 
-_some contingency tables, numerical summaries for some quantitative variables at each setting of some categorical variables (may not be inherently relevant to our data...)_
+[Back to Top](#top)
+
+### Summaries
 
 #### Categorical: Contingency Tables
 
@@ -242,6 +242,8 @@ This contingency table indicates that micro breweries are by far the most popula
 table(IreEng_Brew$brewery_type, IreEng_Brew$country)
 ```
 
+[Back to Top](#top)
+
 #### Quantitative: Numerical Summaries
 
 Running the code chunk below creates a summary statistics table showing the average (`mean()`) and median (`median()`) for the latitude and longitude values in the United States breweries according to `state` rounded to the nearest hundredth. 
@@ -258,9 +260,9 @@ USA_Brew2 <- USA_Brew %>%
 USA_Brew2
 ```
 
-### Plots
+[Back to Top](#top)
 
-_at least 5 plots with nice labels and titles; one bar, one histogram, one box, and one scatter_
+### Plots
 
 #### Bar Plot
 
@@ -274,6 +276,8 @@ g + geom_bar(stat = "count", position = "dodge") +
   labs(title = "Bar Plot of Breweries in Ireland and England", x = "Type of Brewery", y = "Count") +
   scale_fill_discrete(name = "Country")
 ```
+
+[Back to Top](#top)
 
 #### Histograms
 
@@ -296,6 +300,9 @@ g3 <- ggplot(USA_Brew, aes(x = latitude, fill = brewery_type))
 g3 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "black") +
   labs(title = "Histogram of Latitude Values for USA Brewery Types", x = "Latitude", y = "Count", fill = "Type of Brewery")
 ```
+
+[Back to Top](#top)
+
 #### Box Plot
 
 Running the code chunk below creates a box plot to visualize the five-number summary for the relationship between the USA brewery latitudes and the type of brewery. Each box plots displays the minimum, lower quartile (Q1), median, upper quartile (Q3), and maximum values for `latitude` according to `brewery_type`. Jittered points were added to the box plot to visualize the underlying distribution of latitude data presented by the box plots and were color coordinated by type of brewery in the legend.
@@ -315,6 +322,8 @@ g4 + geom_boxplot(na.rm = TRUE) +
   labs(title = "Box Plot of USA Brewery Latitudes", x = "Type of Brewery", y = "Latitude Coordinate", color = "Type of Brewery")
 ```
 
+[Back to Top](#top)
+
 #### Scatter Plot
 
 Running the code chunk below creates a scatter plot to visualize the correlation between the `latitude` and `longitude` coordinates for the 50 random breweries collected in the `CA_Brew` data set. The `geom_point()` function plots the data points while the `geom_smooth()` function plots the regression line using method `lm` for linear model. The color of the data points has been changed according to the region the breweries are located in.
@@ -327,3 +336,5 @@ g5 + geom_point(aes(color = regions)) +
   geom_smooth(method = lm, col = "Blue") +
   labs(title = "Latitude Longitude Coordinates of California Breweries", x = "Latitude", y = "Longitude", color = "Regions")
 ```
+
+[Back to Top](#top)
