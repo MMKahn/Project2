@@ -260,6 +260,19 @@ USA_Brew2 <- USA_Brew %>%
 USA_Brew2
 ```
 
+Running the code chunk below creates a summary statistics table showing the average (`mean()`) and median (`median()`) for the latitude and longitude values in Irish and English breweries according to `country` and county province (`county_province`) rounded to the nearest hundredth. 
+The first row indicates that, according to the 100 random breweries selected from Ireland and England to make up the `IreEng_Brew` data set, breweries in East Sussex, England have average coordinates of (50.90°N, 0.08°E) and median coordinates of (50.87°N, 0.02°E).
+
+```{r}
+IreEng_Brew2 <- IreEng_Brew %>%
+  group_by(country, county_province) %>%
+  summarize(Avg_Lat = round(mean(latitude), digits = 2),
+            Avg_Long = round(mean(longitude), digits = 2),
+            Median_Lat = round(median(latitude), digits = 2),
+            Median_Long = round(median(longitude), digits = 2))
+IreEng_Brew2
+```
+
 [Back to Top](#top)
 
 ### Plots
