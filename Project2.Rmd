@@ -208,6 +208,8 @@ USA_Brew
 
 _some contingency tables, numerical summaries for some quantitative variables at each setting of some categorical variables (may not be inherently relevant to our data...)_
 
+#### Categorical: Contingency Tables
+
 The code chunk below creates a two-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) per region (from the `regions` variable) for the 50 random breweries selected in California (`CA_Brew`) using the `table()` function. 
 
 The first row of this contingency table indicates that of the 14 brewpubs observed in this data set, 5 are located in Northern California, while the other 9 are located in Southern California.
@@ -238,6 +240,22 @@ This contingency table indicates that micro breweries are by far the most popula
 
 ```{r}
 table(IreEng_Brew$brewery_type, IreEng_Brew$country)
+```
+
+#### Quantitative: Numerical Summaries
+
+Running the code chunk below creates a summary statistics table showing the average (`mean()`) and median (`median()`) for the latitude and longitude values in the United States breweries according to `state` rounded to the nearest hundredth. 
+
+The second row indicates that, according to the 50 random breweries selected from the United States, breweries in California have average coordinates of (35.68°N, 119.63°W) and median coordinates of (35.86°N, 119.35°W).
+
+```{r}
+USA_Brew2 <- USA_Brew %>%
+  group_by(state) %>%
+  summarize(Avg_Lat = round(mean(latitude), digits = 2),
+            Avg_Long = round(mean(longitude), digits = 2),
+            Median_Lat = round(median(latitude), digits = 2),
+            Median_Long = round(median(longitude), digits = 2))
+USA_Brew2
 ```
 
 ### Plots
