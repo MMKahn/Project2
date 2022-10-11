@@ -194,6 +194,30 @@ CA_Brew
 
 _some contingency tables, numerical summaries for some quantitative variables at each setting of some categorical variables (may not be inherently relevant to our data...)_
 
+The code chunk below creates a two-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) per region (from the `regions` variable) for the 50 random breweries selected in California (`CA_Brew`) using the `table()` function. 
+
+The first row of this contingency table indicates that of the 14 brewpubs observed in this data set, 5 are located in Northern California, while the other 9 are located in Southern California.
+
+```{r}
+table(CA_Brew$brewery_type, CA_Brew$regions)
+```
+
+The code chunk below creates a one-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) in the data set with 50 random breweries selected in Colorado (`CO_Brew`) using the `table()` function. 
+
+This contingency table indicates that there are 17 brewpubs, 2 contract, 3 large, 21 micro, 4 planning, 2 proprietor, and 1 regional brewery in the Colorado data.
+
+```{r}
+table(CO_Brew$brewery_type)
+```
+
+The code chunk below creates a two-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) per `city` for the 50 random breweries selected in Colorado (`CO_Brew`) using the `table()` function. 
+
+This contingency table indicates that Denver (the 10th column) has the most breweries in this data set with 4 brewpubs, 2 large, 4 micro, 2 planning, and 2 proprietor breweries.
+
+```{r}
+table(CO_Brew$brewery_type, CO_Brew$city)
+```
+
 ### Plots
 
 _at least 5 plots with nice labels and titles; one bar, one histogram, one box, and one scatter_
