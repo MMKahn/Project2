@@ -168,14 +168,19 @@ Get_OB_Random(75) #returns 50 randomly selected breweries; API will still execut
 ### Pulling the Data
 _at least two calls of obtaining data function(s) (possibly combining into one)_
 
-First, we will pull data from the API to create new tibbles `CO_Brew` with 50 breweries in the state of Colorado and `CA_Brew` with 50 breweries in the state of California using the `Get_OB_DataFrame()` function to contact, query, and parse the API data. 
+First, we will pull data from the API to create new tibbles using the `Get_OB_DataFrame()` function to contact, query, and parse the API data. `CA_Brew` is a new tibble with 50 breweries in the state of California; `IreEng_Brew` is a new tibble with 100 breweries, 50 in Ireland and 50 in England; and `USA_Brew` is a new tibble with 50 breweries located within the United States.
 
 ```{r}
-CO_Brew <- Get_OB_DataFrame(size = 50, search_by = "state", input = "Colorado")
-CO_Brew
-
 CA_Brew <- Get_OB_DataFrame(size = 50, search_by = "state", input = "California")
 CA_Brew
+
+IRE_Brew <- Get_OB_DataFrame(size = 50, search_by = "country", input = "Ireland")
+ENG_Brew <- Get_OB_DataFrame(size = 50, search_by = "country", input = "England")
+IreEng_Brew <- rbind(IRE_Brew, ENG_Brew)
+IreEng_Brew
+
+USA_Brew <- Get_OB_DataFrame(size = 50, search_by = "country", input = "United States")
+USA_Brew
 ```
 
 ### Manipulations
@@ -189,7 +194,16 @@ CA_Brew$regions <- ifelse(CA_Brew$latitude <= 35.8, "Southern", "Northern")
 CA_Brew
 ```
 
+A new variable column named `regions` is also added to the USA breweries tibble `USA_Brew` that further categorizes the breweries according to their location in the United States. Using the Census Bureau's [list of states by regions and division](https://www2.census.gov/geo/pdfs/maps-data/maps/reference/us_regdiv.pdf), a vector was created for each region and used to populate the `regions` variable by searching the `state` column for any state corresponding with it. Any row with a `state` not corresponding to a region will return `ERROR` in the new column.
 
+```{r}
+USA_Brew <- USA_Brew %>% 
+  mutate(regions = if_else(state %in% c("Connecticut", "Maine", "Massachusetts", "New Hampshire", "Rhode Island", "Vermont", "New Jersey", "New York", "Pennsylvania"), "Northeast",
+                           ifelse(state %in% c("Indiana", "Illinois", "Michigan", "Ohio", "Wisconsin", "Iowa", "Kansas", "Minnesota", "Missouri", "Nebraska", "North Dakota", "South Dakota"), "Midwest",
+                                  if_else(state %in% c("Delaware", "District of Columbia", "Florida", "Geogria", "Maryland", "North Carolina", "South Carolina", "Virginia", "West Virginia", "Alabama", "Kentucky", "Mississippi", "Tennessee", "Arkansas", "Louisiana", "Oklahoma", "Texas"), "South",
+                                          if_else(state %in% c("Arizona", "Colorado", "Idaho", "New Mexico", "Montana", "Utah", "Nevada", "Wyoming", "Alaska", "California", "Hawaii", "Oregon", "Washington"), "West", "ERROR")))))
+USA_Brew
+```
 ### Summaries
 
 _some contingency tables, numerical summaries for some quantitative variables at each setting of some categorical variables (may not be inherently relevant to our data...)_
@@ -202,22 +216,29 @@ The first row of this contingency table indicates that of the 14 brewpubs observ
 table(CA_Brew$brewery_type, CA_Brew$regions)
 ```
 
-The code chunk below creates a one-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) in the data set with 50 random breweries selected in Colorado (`CO_Brew`) using the `table()` function. 
+The code chunk below creates a one-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) in the data set with 50 random breweries selected in the United States (`USA_Brew`) using the `table()` function. 
 
-This contingency table indicates that there are 17 brewpubs, 2 contract, 3 large, 21 micro, 4 planning, 2 proprietor, and 1 regional brewery in the Colorado data.
-
-```{r}
-table(CO_Brew$brewery_type)
-```
-
-The code chunk below creates a two-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) per `city` for the 50 random breweries selected in Colorado (`CO_Brew`) using the `table()` function. 
-
-This contingency table indicates that Denver (the 10th column) has the most breweries in this data set with 4 brewpubs, 2 large, 4 micro, 2 planning, and 2 proprietor breweries.
+This contingency table indicates that there are 9 brewpubs, 2 closed, 1 contract, 7 large, 30 micro, and 1 proprietor brewery in the USA data.
 
 ```{r}
-table(CO_Brew$brewery_type, CO_Brew$city)
+table(USA_Brew$brewery_type)
 ```
 
+The code chunk below creates a two-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) per region (from the `regions` variable) for the 50 random breweries selected in the United States (`USA_Brew`) using the `table()` function. 
+
+The first row of this contingency table indicates that of the 9 brewpubs observed in this data set, 1 is located in the Midwest, 2 are located in the Northeast, 2 are located in the South, and 4 are located in the West.
+
+```{r}
+table(USA_Brew$brewery_type, USA_Brew$regions)
+```
+
+The code chunk below creates a two-way contingency table showing the number of each type of brewery (from the `brewery_type` variable) per `country` for the 100 random breweries selected in Ireland and England (`IreEng_Brew`) using the `table()` function. 
+
+This contingency table indicates that micro breweries are by far the most popular in both countries (32 in England and 36 in Ireland), taprooms are more popular in England (9 in England and none in Ireland), and regional breweries are more popular in Ireland (none in England and 4 in Ireland).
+
+```{r}
+table(IreEng_Brew$brewery_type, IreEng_Brew$country)
+```
 ### Plots
 
 _at least 5 plots with nice labels and titles; one bar, one histogram, one box, and one scatter_
