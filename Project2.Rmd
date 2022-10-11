@@ -246,7 +246,7 @@ table(IreEng_Brew$brewery_type, IreEng_Brew$country)
 
 Running the code chunk below creates a summary statistics table showing the average (`mean()`) and median (`median()`) for the latitude and longitude values in the United States breweries according to `state` rounded to the nearest hundredth. 
 
-The second row indicates that, according to the 50 random breweries selected from the United States, breweries in California have average coordinates of (35.68°N, 119.63°W) and median coordinates of (35.86°N, 119.35°W).
+The second row indicates that, according to the 50 random breweries selected from the United States to make up the `USA_Brew` data set, breweries in California have average coordinates of (35.68°N, 119.63°W) and median coordinates of (35.86°N, 119.35°W).
 
 ```{r}
 USA_Brew2 <- USA_Brew %>%
@@ -262,6 +262,8 @@ USA_Brew2
 
 _at least 5 plots with nice labels and titles; one bar, one histogram, one box, and one scatter_
 
+#### Bar Plot
+
 Running the code chunk below creates a side-by-side bar plot to visualize the relationship between the brewery types (`brewery_type`) and location (`country`) for the observations in the Irish and English breweries data set (`IreEng_Brew`). The `stat` argument within `geom_bar` is set to `"count"`, `brewery_type` is set to the x-axis, and the `fill` is set to the `country` variable, telling R to count and plot the number each type of brewery per country. The `brewery_type` and `country` variables were titled accordingly on the x-axis and in the legend, the `count` variable has been capitalized, and the plot itself was titled `"Bar Plot of Breweries in Ireland and England"`.
 
 As mentioned above in the discussion of this bar plot's corresponding two-way contingency table, the resulting bar graph again shows that most breweries in Ireland and England are microbreweries, indicating the craft beer is most popular in both countries.
@@ -271,5 +273,17 @@ g <- ggplot(data = IreEng_Brew, aes(x = brewery_type, fill = country))
 g + geom_bar(stat = "count", position = "dodge") +
   labs(title = "Bar Plot of Breweries in Ireland and England", x = "Type of Brewery", y = "Count") +
   scale_fill_discrete(name = "Country")
+```
+
+#### Histogram
+
+Running the code chunk below creates a histogram to visualize the distribution of latitude values for observations in the USA breweries tibble (`latitude` in `USA_Brew`). Since there are 11 observations in the data set which have missing values for their coordinates, these NA values are dropped from the data before plotting (`na.rm = TRUE`). The width of the bins (`binwidth`) is set to 1 for better visualization of the data, while the colors of the bins and their outline are set to yellow and brown respectively. The `count` and `latitude` variables have been capitalized, and the plot itself was titled `"Histogram of Latitude Values for USA Breweries"`.
+
+The resulting histogram shows that most breweries in the US are located between 39°N and 44°N, which is mostly in the northern United States.
+
+```{r}
+g2 <- ggplot(USA_Brew, aes(x = latitude))
+g2 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "brown", fill = "yellow") +
+  labs(title = "Histogram of Latitude Values for USA Breweries", x = "Latitude", y = "Count")
 ```
 
