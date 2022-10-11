@@ -287,3 +287,13 @@ g2 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "brown", fill = "yellow"
   labs(title = "Histogram of Latitude Values for USA Breweries", x = "Latitude", y = "Count")
 ```
 
+Running the code chunk below modifies the previous histogram to visualize the distribution of latitude values by type of brewery for observations in the USA breweries tibble (`latitude` and `brewery_type` in `USA_Brew`). Changes to the previous code include assigning the fill colors of the bins according to brewery type, setting the bin outline to black for readability, updating the histogram's title to account for the modifications, and fix the legend title.
+
+The resulting histogram confirms prior analysis that microbreweries are the most popular overall, but also shows that large breweries are predominantly located in the northern United States near the 44th parallel (44°N).
+
+```{r}
+g2 <- ggplot(USA_Brew, aes(x = latitude, fill = brewery_type))
+g2 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "black") +
+  labs(title = "Histogram of Latitude Values for USA Brewery Types", x = "Latitude", y = "Count", fill = "Type of Brewery")
+```
+
