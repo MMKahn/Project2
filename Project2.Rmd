@@ -239,8 +239,19 @@ This contingency table indicates that micro breweries are by far the most popula
 ```{r}
 table(IreEng_Brew$brewery_type, IreEng_Brew$country)
 ```
+
 ### Plots
 
 _at least 5 plots with nice labels and titles; one bar, one histogram, one box, and one scatter_
 
+Running the code chunk below creates a side-by-side bar plot to visualize the relationship between the brewery types (`brewery_type`) and location (`country`) for the observations in the Irish and English breweries data set (`IreEng_Brew`). The `stat` argument within `geom_bar` is set to `"count"`, `brewery_type` is set to the x-axis, and the `fill` is set to the `country` variable, telling R to count and plot the number each type of brewery per country. The `brewery_type` and `country` variables were titled accordingly on the x-axis and in the legend, the `count` variable has been capitalized, and the plot itself was titled `"Bar Plot of Breweries in Ireland and England"`.
+
+As mentioned above in the discussion of this bar plot's corresponding two-way contingency table, the resulting bar graph again shows that most breweries in Ireland and England are microbreweries, indicating the craft beer is most popular in both countries.
+
+```{r}
+g <- ggplot(data = IreEng_Brew, aes(x = brewery_type, fill = country))
+g + geom_bar(stat = "count", position = "dodge") +
+  labs(title = "Bar Plot of Breweries in Ireland and England", x = "Type of Brewery", y = "Count") +
+  scale_fill_discrete(name = "Country")
+```
 
