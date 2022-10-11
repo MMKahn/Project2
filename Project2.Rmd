@@ -315,3 +315,15 @@ g4 + geom_boxplot(na.rm = TRUE) +
   labs(title = "Box Plot of USA Brewery Latitudes", x = "Type of Brewery", y = "Latitude Coordinate", color = "Type of Brewery")
 ```
 
+#### Scatter Plot
+
+Running the code chunk below creates a scatter plot to visualize the correlation between the `latitude` and `longitude` coordinates for the 50 random breweries collected in the `CA_Brew` data set. The `geom_point()` function plots the data points while the `geom_smooth()` function plots the regression line using method `lm` for linear model. The color of the data points has been changed according to the region the breweries are located in.
+
+The resulting scatter plot shows a strong, negative linear correlation between latitude and longitude data with breweries in Northern California at the bottom right of the plot corresponding to larger latitude values and "smaller" longitude values. This is an expected result, as coordinate lines with negative numbers do not actually represent smaller values. Instead, the larger negative values indicate a greater distance west of the Prime Meridian for longitude, and greater distance south of the Equator for latitude. Since California is located in the northern hemisphere of the globe, Northern California should have "larger" latitudinal values that are positive (further from the Equator).  The shape and right-curvature of California coupled with its geographic location in the western hemisphere also tells us that Southern California should have "smaller" longitudinal values that are negative as they are closer to the Prime Meridian.
+
+```{r}
+g5 <- ggplot(CA_Brew, aes(x = latitude, y = longitude))
+g5 + geom_point(aes(color = regions)) +
+  geom_smooth(method = lm, col = "Blue") +
+  labs(title = "Latitude Longitude Coordinates of California Breweries", x = "Latitude", y = "Longitude", color = "Regions")
+```
