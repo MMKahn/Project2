@@ -275,7 +275,7 @@ g + geom_bar(stat = "count", position = "dodge") +
   scale_fill_discrete(name = "Country")
 ```
 
-#### Histogram
+#### Histograms
 
 Running the code chunk below creates a histogram to visualize the distribution of latitude values for observations in the USA breweries tibble (`latitude` in `USA_Brew`). Since there are 11 observations in the data set which have missing values for their coordinates, these NA values are dropped from the data before plotting (`na.rm = TRUE`). The width of the bins (`binwidth`) is set to 1 for better visualization of the data, while the colors of the bins and their outline are set to yellow and brown respectively. The `count` and `latitude` variables have been capitalized, and the plot itself was titled `"Histogram of Latitude Values for USA Breweries"`.
 
@@ -292,8 +292,26 @@ Running the code chunk below modifies the previous histogram to visualize the di
 The resulting histogram confirms prior analysis that microbreweries are the most popular overall, but also shows that large breweries are predominantly located in the northern United States near the 44th parallel (44°N).
 
 ```{r}
-g2 <- ggplot(USA_Brew, aes(x = latitude, fill = brewery_type))
-g2 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "black") +
+g3 <- ggplot(USA_Brew, aes(x = latitude, fill = brewery_type))
+g3 + geom_histogram(binwidth = 1, na.rm = TRUE, color = "black") +
   labs(title = "Histogram of Latitude Values for USA Brewery Types", x = "Latitude", y = "Count", fill = "Type of Brewery")
+```
+#### Box Plot
+
+Running the code chunk below creates a box plot to visualize the five-number summary for the relationship between the USA brewery latitudes and the type of brewery. Each box plots displays the minimum, lower quartile (Q1), median, upper quartile (Q3), and maximum values for `latitude` according to `brewery_type`. Jittered points were added to the box plot to visualize the underlying distribution of latitude data presented by the box plots and were color coordinated by type of brewery in the legend.
+
+The resulting box plot shows that the median latitude coordinates for the 50 breweries within our `USA_Brew` data are very close in value for brewpubs, closed, and large breweries, and are greater than (more northerly than) the median latitude coordinates for US microbreweries. Within our data set, there is only 1 contract and 1 proprietor brewery, so no boxplot can be created for these two types as there is no distribution available to plot.
+
+The lengths of the boxes indicate that the interquartile range for brewpubs and closed breweries are similar, and larger than the IQR for micro and large breweries. While this is true, microbreweries have a larger overall range of `latitude` data, echoed by the fact that there are more microbreweries in the US data set than any other type by far. The data for those microbreweries therefore has more variation in latitude values, although variation is similar in the brewpud and closed brewery types.
+
+Outliers with smaller latitude coordinates (breweries located further south) are also indicated by the point in the large and micro box plots. 
+
+Both the brewpub and large brewery box plots are skewing right, while the closed and micro brewery box plots appear to be symmetrical indicating a fairly normal distribution for `latitude` data across these brewery types.
+
+```{r}
+g4 <- ggplot(USA_Brew, aes(x = brewery_type, y = latitude))
+g4 + geom_boxplot(na.rm = TRUE) +
+  geom_jitter(na.rm = TRUE, aes(color = brewery_type)) +
+  labs(title = "Box Plot of USA Brewery Latitudes", x = "Type of Brewery", y = "Latitude Coordinate", color = "Type of Brewery")
 ```
 
